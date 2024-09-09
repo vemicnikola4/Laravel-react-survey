@@ -3,7 +3,6 @@ import { useState } from 'react';
 
 export default function Pagination({meta, onPageClick}) {
 
-  let prevActive = false;
   const onClick = ((e,link)=>{
     e.preventDefault();
     if (!link.url){
@@ -54,7 +53,7 @@ export default function Pagination({meta, onPageClick}) {
               <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
            
             {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
-         {meta.links.map((link,index)=>(
+          {meta.links.map((link,index)=>(
                 <a
                 key={index}
                 href="#"

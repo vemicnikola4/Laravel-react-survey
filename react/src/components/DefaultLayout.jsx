@@ -31,7 +31,7 @@ const DefaultLeyout = () => {
     return <Navigate to='login' />
   }
 
-  
+  //**LOGOUT */
   const logout = (e)=>{
     e.preventDefault();
     axiosClient.post('/logout')
@@ -45,6 +45,8 @@ const DefaultLeyout = () => {
     });
     
   }
+  //**LOGOUT END */
+
 
   useEffect(()=>{
     axiosClient.get('/me')

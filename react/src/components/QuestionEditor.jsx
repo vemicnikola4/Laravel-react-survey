@@ -170,7 +170,7 @@ export default function QuestionEditor({
 
             >
               {questionTypes.map((type) => (
-                <option value={type} key={type}>
+                <option value={type} key={type} >
                   {upperCaseFirst(type)}
                 </option>
               ))}

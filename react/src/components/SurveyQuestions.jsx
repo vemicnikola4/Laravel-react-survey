@@ -17,6 +17,7 @@ import QuestionEditor from "./QuestionEditor";
 export default function SurveyQuestions({questions, onQuestionsUpdate,error,setError}) {
   const [myQuestions, setMyQuestions] = useState([...questions]);
 
+  //**ADD QUESTION */
   const addQuestion = (index) => {
     index = index !== undefined ? index : myQuestions.length;
     setError({
@@ -43,6 +44,9 @@ export default function SurveyQuestions({questions, onQuestionsUpdate,error,setE
     setMyQuestions([...myQuestions]);
     onQuestionsUpdate(myQuestions)
   };
+  //**ADD QUESTION END*/
+
+  //**COPY AND ADD */
   const copyAndAdd= (index)=>{
     setError({
       title:'',
@@ -97,8 +101,10 @@ export default function SurveyQuestions({questions, onQuestionsUpdate,error,setE
     
 
   }
+  //**COPY AND ADD END*/
 
 
+  //**QUESTION CHANGE */
   const questionChange = (question) => {
     if (!question) return;
     const newQuestions = myQuestions.map((q) => {
@@ -111,13 +117,16 @@ export default function SurveyQuestions({questions, onQuestionsUpdate,error,setE
     onQuestionsUpdate(newQuestions);
     console.log(myQuestions);
   };
+  //**QUESTION CHANGE END*/
 
+  //**QUESTION DELETE */
   const deleteQuestion = (question) => {
     const newQuestions = myQuestions.filter((q) => q.id !== question.id);
 
     setMyQuestions(newQuestions);
     onQuestionsUpdate(newQuestions)
   };
+  //**QUESTION DELETE END*/
 
   useEffect(() => {
     setMyQuestions(questions)
