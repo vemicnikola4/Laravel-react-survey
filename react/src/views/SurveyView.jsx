@@ -202,6 +202,7 @@ const SurveyView = () => {
             })
         }
     },[])
+    console.log(survey.slug);
     return (
     <PageComponent title={(!id ? "Create new survey" : "Update survey")}
         buttons={

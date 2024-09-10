@@ -19,7 +19,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Symfony\Component\HttpFoundation\Request;
 
-
 class SurveyController extends Controller
 {
     /**
@@ -285,7 +284,7 @@ class SurveyController extends Controller
     public function getBySlug(Request $request){
         $survey = Survey::where('slug',$request->slug)->first();
 
-        if( !$survey->status){
+        if( $survey->status === 0){
             return response("",404);
         }
 
