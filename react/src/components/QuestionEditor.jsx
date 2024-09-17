@@ -13,8 +13,14 @@ export default function QuestionEditor({
   copyAndAdd,
   error,
 }) {
+  
   const [model, setModel] = useState({ ...question });
   const { questionTypes } = useStateContext();
+  const [optionError,setOptionError] =  useState('');
+
+  function containsOnlyNumbers(str){
+    return /^\d+$/.test(str);
+  }
   useEffect(() => {
     questionChange(model);
   }, [model]);
@@ -25,7 +31,7 @@ export default function QuestionEditor({
 
   function shouldHaveOptions(type = null) {
     type = type || model.type;
-    return ["select", "radio", "checkbox"].includes(type);//vraca true ako je type prisutan u ovom nizu u suprotnom vraca false
+    return ["select", "radio", "checkbox",'evaluation'].includes(type);//vraca true ako je type prisutan u ovom nizu u suprotnom vraca false
   }
   
 
@@ -35,6 +41,7 @@ export default function QuestionEditor({
       type: ev.target.value,
     };
     if (!shouldHaveOptions(model.type) && shouldHaveOptions(ev.target.value)) {
+      
       if (!model.data.options) {
         newModel.data = {
           options: [{ uuid: uuidv4(), text: "" }],
@@ -43,7 +50,10 @@ export default function QuestionEditor({
     }
     setModel(newModel);
   }
-
+  const onInputChange =(e)=>{
+    
+  }
+  
   function addOption() {
     model.data.options.push({
       uuid: uuidv4(),
@@ -56,70 +66,75 @@ export default function QuestionEditor({
     model.data.options = model.data.options.filter(option => option.uuid != op.uuid)
     setModel({...model})
   }
+
   return (
     <>
       <div>
         <div className="flex justify-between mb-3">
+          {/* Question title */}
           <h4>
             {index + 1}. {model.question}
           </h4>
+          {/* Question title end*/}
+          {/* Buttons */}
           <div className="flex items-center">
-          <button
-              type="button"
-              className="
-            flex
-            items-center
-            text-xs
-            py-1
-            px-3
-            mr-2
-            rounded-sm
-            text-white
-            bg-gray-600
-            hover:bg-gray-700"
-              onClick={() =>copyAndAdd(index)}
-            >
-              <PlusIcon className="w-4" />
-              copy and add
-            </button>
             <button
-              type="button"
-              className="
-            flex
-            items-center
-            text-xs
-            py-1
-            px-3
-            mr-2
-            rounded-sm
-            text-white
-            bg-gray-600
-            hover:bg-gray-700"
-              onClick={() => addQuestion(index + 1)}
-            >
-              <PlusIcon className="w-4" />
-              add
-            </button>
-            <button
-              type="button"
-              className="
-            flex
-            items-center
-            text-xs
-            py-1
-            px-3
-            rounded-sm
-            border border-transparent
-            text-red-500
-            hover:border-red-600
-            font-semibold
-          "
-              onClick={() => deleteQuestion(question)}
-            >
-              <TrashIcon className="w-4" />
-              Delete
-            </button>
+                type="button"
+                className="
+              flex
+              items-center
+              text-xs
+              py-1
+              px-3
+              mr-2
+              rounded-sm
+              text-white
+              bg-gray-600
+              hover:bg-gray-700"
+                onClick={() =>copyAndAdd(index)}
+              >
+                <PlusIcon className="w-4" />
+                copy and add
+              </button>
+              <button
+                type="button"
+                className="
+              flex
+              items-center
+              text-xs
+              py-1
+              px-3
+              mr-2
+              rounded-sm
+              text-white
+              bg-gray-600
+              hover:bg-gray-700"
+                onClick={() => addQuestion(index + 1)}
+              >
+                <PlusIcon className="w-4" />
+                add
+              </button>
+              <button
+                type="button"
+                className="
+              flex
+              items-center
+              text-xs
+              py-1
+              px-3
+              rounded-sm
+              border border-transparent
+              text-red-500
+              hover:border-red-600
+              font-semibold
+            "
+                onClick={() => deleteQuestion(question)}
+              >
+                <TrashIcon className="w-4" />
+                Delete
+              </button>
           </div>
+          {/* Buttons end*/}
         </div>
         <div className="flex gap-3 justify-between mb-3">
           {/* Question Text */}
@@ -199,13 +214,14 @@ export default function QuestionEditor({
         </div>
         {/*Description*/}
         
+        {/*If is select or radio or check box add options*/}   
         <div>
           {shouldHaveOptions() && (
             
             <div>
               {
-        error.options.text && (<div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 container ">{
-          error.options.text
+            error.options.text && (<div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 container ">{
+            error.options.text
            }
            </div>)
         }
@@ -234,7 +250,15 @@ export default function QuestionEditor({
                 </div>
               )}
               {model.data.options.length > 0 && (
+                
                 <div>
+                  {
+                      optionError !== '' && (<div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 container ">{
+                        optionError
+                       }
+                       </div>)
+                    }
+                    
                   {model.data.options.map((op, ind) => (
                     
                     <div key={op.uuid} className={"flex items-center mb-1" + 
@@ -245,17 +269,30 @@ export default function QuestionEditor({
                         type="text"
                         value={op.text}
                         onInput={(ev) => {
-                          op.text = ev.target.value;
-                          setModel({ ...model });
+                          if ( model.type == 'evaluation'){
+                            if ( containsOnlyNumbers(ev.target.value)){
+                              op.text = ev.target.value;
+                              setModel({ ...model });
+                              setOptionError('');
+                              }else{
+                                setOptionError('Only digits allowed');
+                              }
+                            }else{
+                              setOptionError('');
+                              op.text = ev.target.value;
+                              setModel({ ...model });
+                            }
                         }}
-                        className="w-full
+                        className={`w-full
                       rounded-sm
                       py-1
                       px-2
                       text-xs
                       border border-gray-300
-                      focus:border-indigo-500"
+                      focus:border-indigo-500` +
+                      ( optionError !== '' ? 'border-red-500' : '') }
                       />
+                      
                       <button
                         onClick={ev => deleteOption(op)}
                         type="button"
@@ -271,7 +308,9 @@ export default function QuestionEditor({
                       >
                         <TrashIcon className="w-3 h-3 text-red-500" />
                       </button>
+                      
                     </div>
+                    
                   ))}
                 </div>
               )}

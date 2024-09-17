@@ -226,7 +226,7 @@ class SurveyController extends Controller
             //it will be an object coming from the frontend so we need to json_encode it and save it as a string in the database
             $validator = Validator::make($question,[
                 'question'=> 'required|string',
-                'type' => ['required', Rule::in(['text', 'textarea','select','radio','checkbox'])],
+                'type' => ['required', Rule::in(['text', 'textarea','select','radio','checkbox','evaluation'])],
                 'description' => 'nullable|string',
                 'data.options.*.text'=>'required|string|min:1',
                 'survey_id'=>'required|exists:App\Models\Survey,id'
@@ -235,7 +235,7 @@ class SurveyController extends Controller
                 $question['data'] = json_encode($question['data']);
                 $validator = Validator::make($question,[
                     'question'=> 'required|string',
-                    'type' => ['required', Rule::in(['text', 'textarea','select','radio','checkbox'])],
+                    'type' => ['required', Rule::in(['text', 'textarea','select','radio','checkbox','evaluation'])],
                     'description' => 'nullable|string',
                     'data'=>'present',
                     'survey_id'=>'required|exists:App\Models\Survey,id'
@@ -262,7 +262,7 @@ class SurveyController extends Controller
            //if its array it means it came as an object checkbox or select, returns a string
            $validator = Validator::make($data,[
             'question'=> 'required|string',
-            'type' => ['required', Rule::in(['text', 'textarea','select','radio','checkbox'])],
+            'type' => ['required', Rule::in(['text', 'textarea','select','radio','checkbox','evaluation'])],
             'description' => 'nullable|string',
             'data.options.*.text'=>'required|string|min:1',
         ]);
@@ -270,21 +270,21 @@ class SurveyController extends Controller
             $data['data'] = json_encode($data['data']);
             $validator = Validator::make($data,[
                 'question'=> 'required|string',
-                'type' => ['required', Rule::in(['text', 'textarea','select','radio','checkbox'])],
+                'type' => ['required', Rule::in(['text', 'textarea','select','radio','checkbox','evaluation'])],
                 'description' => 'nullable|string',
                 'data'=>'present',
             ]);
         
         }
     }
-       
+
         return $question->update($validator->validate());
     }
    
     public function getBySlug(Request $request){
         $survey = Survey::where('slug',$request->slug)->first();
 
-        if( $survey->status === 0){
+        if( !$survey->status){
             return response("",404);
         }
 

@@ -115,7 +115,6 @@ export default function SurveyQuestions({questions, onQuestionsUpdate,error,setE
     });
     setMyQuestions(newQuestions);
     onQuestionsUpdate(newQuestions);
-    console.log(myQuestions);
   };
   //**QUESTION CHANGE END*/
 

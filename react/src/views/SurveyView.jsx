@@ -7,6 +7,7 @@ import { useNavigate, useParams  } from "react-router-dom";
 import SurveyQuestions from "../components/SurveyQuestions";
 import {v4 as uuidv4} from "uuid";
 import { useStateContext } from "../contexts/ContextProvider";
+import FadeLoader from "react-spinners/FadeLoader";
 
 
 const SurveyView = () => {
@@ -137,7 +138,18 @@ const SurveyView = () => {
           });
          
     }
-    const onDelete = ()=>{
+    const onDeleteClick = (id) =>{
+        if(!id){
+            return;
+        }else{
+            if (window.confirm("Are you sure you want to delete this survey?")) {
+                axiosClient.delete(`/survey/${id}`).then(() => {
+                  getSurveys();
+                //   showToast('The survey was deleted');
+                showToast('The survey was deleted');
+                });
+              }
+        }
 
     }
     const onImageChoose = (e) => {
@@ -202,16 +214,15 @@ const SurveyView = () => {
             })
         }
     },[])
-    console.log(survey.slug);
     return (
     <PageComponent title={(!id ? "Create new survey" : "Update survey")}
         buttons={
             <div className="flex gap-2">
-                 <TButton color="green" to={`/survey/public/${survey.slug}`} >
+                 <TButton color="green" to={!loading ? `/survey/public/${survey.slug}` : null} >
                     <LinkIcon className="h-6 w-6 mr-2"/>
                     Public Link
                 </TButton>
-                <TButton color="red" onClick={onDelete}>
+                <TButton color="red" onClick={e=>onDeleteClick(survey.id)}>
                     <TrashIcon className="h-6 w-6 mr-2"/>
                     Delete
                 </TButton>
@@ -220,8 +231,8 @@ const SurveyView = () => {
     >
         {
             (loading ?(
-                <div>
-                    ...loading
+                <div className="flex items-center justify-center aligne-items-center h-screen">
+                    <FadeLoader />
                 </div>
             ):(
                 <form action="#" method="POST" onSubmit={onSubmit} >

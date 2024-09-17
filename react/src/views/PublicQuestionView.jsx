@@ -40,6 +40,21 @@ export default function PublicQuestionView({
                 </select>
               </div>
             )}
+            {question.type === "evaluation" && (
+              <div>
+                <select
+                  onChange={(ev) => answerChanged(ev.target.value)}
+                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                  <option value="">Please Select</option>
+                  {question.data.options.map((option) => (
+                    <option key={option.uuid} value={option.text}>
+                      {option.text}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             {question.type === "radio" && (
               <div>
                 {question.data.options.map((option, ind) => (

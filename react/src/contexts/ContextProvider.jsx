@@ -197,7 +197,7 @@ export const ContextProvider = ({children}) => {
     const[currentUser, setCurrentUser] = useState({});
     const[userToken, _setUserToken] = useState(localStorage.getItem('TOKEN') || "");
     const [surveys, setSurveys] = useState(tmpSurveys);
-    const[questionTypes]= useState(['text','select','radio','checkbox','textarea'])
+    const[questionTypes]= useState(['text','select','radio','checkbox','textarea','evaluation'])
     const[toast,setToast]=useState({
       message:"",
       show:false,

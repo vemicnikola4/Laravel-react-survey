@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', [AuthController::class,'me']);
     Route::get('/dashboard',[DashboardController::class,'index']);
     Route::get('/surveys/{id}/answers',[DashboardController::class,'showSurveyAnswers']);
+    Route::get('/surveys/{id}/questions',[DashboardController::class,'showSurveyQuestions']);
    
     
 });

@@ -25,7 +25,7 @@ const SurveyListItem = ({survey, onDeleteClick}) =>{
                     Edit
                 </TButton>
                 <div className="flex items-center">
-                    <TButton to={`/survey/${survey.id}`} circle link>
+                    <TButton to={`/surveys/${survey.id}/answers`} circle link>
                         <ArrowTopRightOnSquareIcon className="w-5 h-5" />
                     </TButton>
                     {survey.id && (
