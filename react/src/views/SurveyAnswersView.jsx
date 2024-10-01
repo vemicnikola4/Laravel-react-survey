@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import FadeLoader from "react-spinners/FadeLoader";
 import PageComponent from "../components/PageComponent";
 import SurveyAnswerItem from "../components/SurveyAnswerItem";
+import ChartPie from "../components/ChartPie";
 
 const SurveyAnswersView = ()=>{
     const[answers,setAnswers] = useState([]);
@@ -17,7 +18,13 @@ const SurveyAnswersView = ()=>{
     let answerJsxEvaluationArray = [];
     let totalAnswers = [];
 
-
+    const chartPieData={
+        labels:[],
+        datasets:[
+            
+           
+        ],
+    }
     useEffect(()=>{
         setLoading(true);
         axiosClient.get(`surveys/${id}/answers`)
@@ -58,8 +65,8 @@ const SurveyAnswersView = ()=>{
         let arrayAnswersDuplicat = answersArray;
         if ( answersArray.length > 0 ){
 
-            questions.forEach((question)=>{
-                
+            //** If type of questions is checkbox jsom strinyfy and make one unique array and place it in arrayAnswers with key that match question.id */
+            questions.forEach((question)=>{        
                 if ( question.type == 'checkbox'){
 
                     if ( answersArray[question.id].length > 0 ){
@@ -71,6 +78,7 @@ const SurveyAnswersView = ()=>{
                             if ( arr.length > 0 ){
                                 arr.forEach((e)=>{
                                     checkboxArray.push(e);
+                                    
                                 })
                             }
                         })
@@ -91,6 +99,7 @@ const SurveyAnswersView = ()=>{
             //** If the type of question is not evaluation, calculating what percent of each answer for an answer if the type of questioon is evaluation we gonna do the avg sql in the backend ans send it as an answer */
             for( let i = 0; i < questions.length; i++ ){
                 //** if the type of question is evaluation do the avg value for each question */
+
                 if ( questions[i].type == 'evaluation'){
                     let sum = 0;
                     let count = 0;
@@ -111,7 +120,7 @@ const SurveyAnswersView = ()=>{
                     }
 
                 }else{
-                //** if the type of question is select or radio or checkbox count how meny times each value shows for each question and put it as a areay element type string which will have a index matching question id*/
+                //** if the type of question is select or radio or checkbox count how mAny times each value shows for each question and put it as a areay element type string which will have a index matching question id*/
 
                     for( let j = 0; j < answersArray[questions[i].id].length; j++ ){
                         totalAnswers[questions[i].id] = answersArray[questions[i].id].length;
@@ -122,20 +131,34 @@ const SurveyAnswersView = ()=>{
                                 b++;
                             }
                         }
-                        //**Puting strings in a new array i would render */
+                        //**Puting strings in a new array i will render */
                         if ( answersJsxArray[questions[i].id] == undefined ){
                             answersJsxArray[questions[i].id] = [];
                             let percentage = b /  answersArray[questions[i].id].length  * 100;
                             percentage = percentage.toFixed(2);
-                            answersJsxArray[questions[i].id].push(`${answersArray[questions[i].id][j]} takes ${percentage}% of all answers`);
+
+                            
+                            
+                            if ( answersJsxArray[questions[i].id]['val'] == undefined ){
+                                answersJsxArray[questions[i].id]['val'] = [];
+                                answersJsxArray[questions[i].id]['val'].push(`${answersArray[questions[i].id][j]} ${b}`);
+                            }
+
+                            if ( answersJsxArray[questions[i].id]['labels'] == undefined ){
+                                answersJsxArray[questions[i].id]['labels'] = [];
+                                answersJsxArray[questions[i].id]['labels'].push(answersArray[questions[i].id][j]);
+                            }
+
     
                         }else{
-                            
+
                             let percentage =  b /  answersArray[questions[i].id].length  * 100;
                             percentage =  percentage.toFixed(2);
-    
-                            if(!answersJsxArray[questions[i].id].includes(`${answersArray[questions[i].id][j]} takes ${percentage}% of all answers`)){
-                                answersJsxArray[questions[i].id].push(`${answersArray[questions[i].id][j]} takes ${percentage}% of all answers`);
+                            if ( !answersJsxArray[questions[i].id]['labels'].includes(answersArray[questions[i].id][j])){
+                                answersJsxArray[questions[i].id]['labels'].push(answersArray[questions[i].id][j]);
+                            }
+                            if(!answersJsxArray[questions[i].id]['val'].includes(`${answersArray[questions[i].id][j]} ${b}`)){
+                                answersJsxArray[questions[i].id]['val'].push(`${answersArray[questions[i].id][j]} ${b}`);
     
                             }
                         }
@@ -148,9 +171,8 @@ const SurveyAnswersView = ()=>{
             
         }
        
-    console.log(answersArray);
     }
-    
+    console.log(answersJsxArray);
     let br = 0;
     return (
         <>
@@ -161,7 +183,8 @@ const SurveyAnswersView = ()=>{
              }
         {!loading &&
         <PageComponent >
-                    <div className="flex flex-col">
+                    
+            <div className="flex flex-col">
                 <div className="overflow-x-auto">
                     <div className="p-1.5 w-full inline-block align-middle">
                         <div className="overflow-hidden border rounded-lg">
@@ -187,43 +210,52 @@ const SurveyAnswersView = ()=>{
                                         <tr key={key}>
                                             <td className="px-6 py-3 text-xs font-bold text-left text-gray-500">{question.question}</td>
                                             <td className="px-6 py-3 text-xs font-bold text-left text-gray-500">
-                                            <ul>
                                                 {/* Select checkbox and radio dispplay */}
 
                                                 {
                                                     ['select','radio','checkbox'].includes(question.type) &&
-                                                    answersArray.length > 0 &&
-
-                                                    answersJsxArray[question.id].map((answer)=>(
+                                                    <div className="flex">
+                                                    {answersArray.length > 0 &&
+                                                    <ChartPie data={answersJsxArray[question.id]}/>
+                                                    }
+                                                    </div>
+                                                    
+                                                    // answersJsxArray[question.id].map((answer,key)=>(
                                                         
-                                                        <li>{answer}</li>
+                                                    //     <li  key={key} >{answer}</li>
 
-                                                    )) 
+                                                    // )) 
                                                 }
                                                 {/* Type text and textarea display */}
                                                 {
                                                     ['text','textarea'].includes(question.type) &&
-                                                    answersArray.length > 0 &&
+                                                <ul>
+
+                                                    {answersArray.length > 0 &&
 
                                                     
-                                                    answersArray[question.id].map((answer)=>(
+                                                    answersArray[question.id].map((answer,key)=>(
                                                         
-                                                        <li>{answer}</li>
+                                                        <li key={key}>{answer}</li>
 
-                                                    )) 
+                                                    ))}
+                                                </ul>
+
                                                 }
                                                 {
                                                     question.type == 'evaluation' &&
+                                                    
                                                     answerJsxEvaluationArray.length > 0 &&
-                                                    <li>{
-                                                        answerJsxEvaluationArray[question.id]
+                                                    
+                                                        <div className="text-lg">
+                                                            {answerJsxEvaluationArray[question.id]}
+                                                        </div>
+                                                       
                                                     
                                                         
-                                                        }</li>
                                                     
                                                     
                                                 }   
-                                            </ul>
                                                 
 
                                             </td>
