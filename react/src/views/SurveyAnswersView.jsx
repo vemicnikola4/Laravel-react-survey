@@ -62,7 +62,7 @@ const SurveyAnswersView = ()=>{
             )) : null
         ))
 
-        let arrayAnswersDuplicat = answersArray;
+        let answersArrayDuplicat = answersArray;
         if ( answersArray.length > 0 ){
 
             //** If type of questions is checkbox jsom strinyfy and make one unique array and place it in arrayAnswers with key that match question.id */
@@ -126,8 +126,8 @@ const SurveyAnswersView = ()=>{
                         totalAnswers[questions[i].id] = answersArray[questions[i].id].length;
                         
                         let b = 0;
-                        for( let h = 0; h < arrayAnswersDuplicat[questions[i].id].length; h++ ){
-                            if (arrayAnswersDuplicat[questions[i].id][h] ==  answersArray[questions[i].id][j]){
+                        for( let h = 0; h < answersArrayDuplicat[questions[i].id].length; h++ ){
+                            if (answersArrayDuplicat[questions[i].id][h] ==  answersArray[questions[i].id][j]){
                                 b++;
                             }
                         }
@@ -172,7 +172,6 @@ const SurveyAnswersView = ()=>{
         }
        
     }
-    console.log(answersJsxArray);
     let br = 0;
     return (
         <>

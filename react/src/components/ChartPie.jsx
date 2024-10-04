@@ -7,17 +7,16 @@ const ChartPie= ({data})=>{
 
 
     let dataArr = [];
-    
     data.val.forEach(element => {
         
 
         data.labels.forEach(e => {
-            if ( element.includes(e)){
+            if ( element.includes(e) && element.indexOf(e) == 0){
                 let result = element.replace(e ,"");
                 result = result.trim();
                 result = Number(result);
                 dataArr.push({
-                    label: e,
+                    label:e,
                     value:result,
                 })
             }
@@ -25,8 +24,8 @@ const ChartPie= ({data})=>{
         });
         
     });
-    console.log(dataArr);
-
+    
+   
     return (
         <div className="dataCard">
         <Doughnut 
